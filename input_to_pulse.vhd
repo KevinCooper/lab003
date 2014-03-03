@@ -13,7 +13,7 @@ entity input_to_pulse is
 end input_to_pulse;
 
 architecture Behavioral of input_to_pulse is
-constant two_milli: integer := 200000; -- 2ms @ 20MHZ
+constant four_milli: integer := 400000; -- 2ms @ 20MHZ
 type states is (idle, high);
 signal state_reg, state_next : states;
 signal counter, counter_next: unsigned(19 downto 0);
@@ -27,7 +27,7 @@ begin
 		counter <= "00000000000000000000";
 	elsif(rising_edge(clk)) then
 		counter <= counter;
-		if(counter = two_milli+1) then
+		if(counter = four_milli+1) then
 			counter <= "00000000000000000000";
 		else
 			if(state_reg=high) then
@@ -53,7 +53,7 @@ begin
 	elsif(rising_edge(clk)) then
 		if(state_reg=idle and input='1') then
 			state_next<=high;
-		elsif(state_reg=high and counter=two_milli) then
+		elsif(state_reg=high and counter=four_milli) then
 			if(input = '0') then
 				state_next<= idle;
 			else

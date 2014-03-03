@@ -35,7 +35,7 @@ signal pixel_clk, serialize_clk, serialize_clk_n: std_logic;
 signal v_completed, blank: std_logic;
 signal ball_x, ball_y, paddle_y: unsigned (10 downto 0);
 signal h_out, v_out, v_completed_out : std_logic;
-signal h_temp, v_temp, v_completed_temp: std_logic;
+signal h_temp, v_temp, v_completed_temp, h_temp2, v_temp2 : std_logic;
 signal blank_temp, blank_temp2, blank_temp3 : std_logic;
 signal ascii_to_write: std_logic_vector(7 downto 0);
 signal write_en: std_logic;
@@ -66,7 +66,7 @@ begin
 	Inst_character_gen: entity work.character_gen 
 		PORT MAP(
 		clk => pixel_clk,
-		blank => blank_temp2,
+		blank => blank_temp,
 		reset => reset,
 		row => std_logic_vector(row),
 		column => std_logic_vector(column),
@@ -94,9 +94,9 @@ begin
                 red_p     => red,
                 green_p   => green,
                 blue_p    => blue,
-                blank     => blank,
-                hsync     => h_sync,
-                vsync     => v_sync,
+                blank     => blank_temp2,
+                hsync     => h_temp2,
+                vsync     => v_temp2,
                 -- outputs to TMDS drivers
                 red_s     => red_s,
                 green_s   => green_s,
@@ -109,8 +109,8 @@ begin
 	 port map(
 				clk => pixel_clk,
 				reset => reset,
-				h_sync=>h_sync,
-				v_sync=>v_sync,
+				h_sync=>h_out,
+				v_sync=>v_out,
 				v_completed=>v_completed,
 				blank=>blank,
 				row=> row,
@@ -124,15 +124,20 @@ begin
 		port map(	 clk => pixel_clk,	 reset => reset,	 d => blank_temp,	 q => blank_temp2);
 	inst_blank3: entity work.dff
 		port map(	 clk => pixel_clk,	 reset => reset,	 d => blank_temp2,	 q => blank_temp3);
---	inst_h1: entity work.dff
---		port map(	 clk => pixel_clk,	 reset => reset,	 d => h_out,	 q => h_temp);
---	inst_h2: entity work.dff
---		port map(	 clk => pixel_clk,	 reset => reset,	 d => h_temp,	 q => h_sync);
+		
+	inst_h1: entity work.dff
+		port map(	 clk => pixel_clk,	 reset => reset,	 d => h_out,	 q => h_temp);
+	inst_h2: entity work.dff
+		port map(	 clk => pixel_clk,	 reset => reset,	 d => h_temp,	 q => h_temp2);
+	inst_h3: entity work.dff
+		port map(	 clk => pixel_clk,	 reset => reset,	 d => h_temp2,	 q => h_sync);
 --		
---	inst_v1: entity work.dff
---		port map(	 clk => pixel_clk,	 reset => reset,	 d => v_out,	 q => v_temp);
---	inst_v2: entity work.dff
---		port map(	 clk => pixel_clk,	 reset => reset,	 d => v_temp,	 q => v_sync);
+	inst_v1: entity work.dff
+		port map(	 clk => pixel_clk,	 reset => reset,	 d => v_out,	 q => v_temp);
+	inst_v2: entity work.dff
+		port map(	 clk => pixel_clk,	 reset => reset,	 d => v_temp,	 q => v_temp2);
+	inst_v3: entity work.dff
+		port map(	 clk => pixel_clk,	 reset => reset,	 d => v_temp2,	 q => v_sync);
 --		
 --	inst_v_completed_1: entity work.dff
 --		port map(	 clk => pixel_clk,	 reset => reset,	 d => v_completed_out,	 q => v_completed_temp);

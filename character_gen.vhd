@@ -14,7 +14,11 @@ entity character_gen is
            write_en : in  STD_LOGIC;
            r : out  STD_LOGIC_VECTOR (7 downto 0);
            g : out  STD_LOGIC_VECTOR (7 downto 0);
-           b : out  STD_LOGIC_VECTOR (7 downto 0));
+           b : out  STD_LOGIC_VECTOR (7 downto 0)--;
+--			  test: out STD_LOGIC_VECTOR (11 downto 0);
+--			  test2: out STD_LOGIC_VECTOR (7 downto 0)
+			  );
+	
 end character_gen;
 
 architecture cooper of character_gen is
@@ -23,13 +27,13 @@ signal col_temp: std_logic_vector(2 downto 0);
 signal col_out: std_logic_vector(2 downto 0);
 signal row_out: std_logic_vector(3 downto 0);
 signal data_out: std_logic_vector(7 downto 0);
-signal f: unsigned(21 downto 0);
+signal f: unsigned(13 downto 0);
 signal mux_out: std_logic;
 signal internal_counter, temp: unsigned(11 downto 0);
 signal output, output2: std_logic_vector(7 downto 0);
 
 begin
-	 f<= unsigned( unsigned(column) + 80 * unsigned(row));
+	 f<= unsigned( unsigned(column(10 downto 3)) + 80 * unsigned(row(10 downto 4)));
 	 
     inst_col1: entity work.dff2
     port map(	 clk => clk,	 reset => reset,	 d => column(2 downto 0),	 q => col_temp);
@@ -51,14 +55,28 @@ begin
 
 
 --Internal counter
+
 temp <= internal_counter +1;
 
-process(write_en) is
+process(clk, write_en,reset) is
 begin
-	if(falling_edge(write_en)) then
-		internal_counter <= temp;
+	internal_counter <= internal_counter;
+	
+	if(reset='1') then
+		internal_counter <= (others => '0');
+	elsif(rising_edge(clk)) then
+		if(write_en='1') then
+			if (temp >=2400) then
+				internal_counter <= (others => '0');
+			else
+				internal_counter <= temp;
+			end if;
+		end if;
 	end if;
 end process;
+
+--test<= std_logic_vector(internal_counter);
+--test2<=ascii_to_write;
 
 
 --Output stuff
@@ -68,4 +86,3 @@ end process;
 			mux_out & mux_out & mux_out & mux_out & mux_out & mux_out & mux_out & mux_out;
 
 end cooper;
-

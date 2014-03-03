@@ -25,7 +25,9 @@ ARCHITECTURE behavior OF character_gen_test IS
          write_en : IN  std_logic;
          r : OUT  std_logic_vector(7 downto 0);
          g : OUT  std_logic_vector(7 downto 0);
-         b : OUT  std_logic_vector(7 downto 0)
+         b : OUT  std_logic_vector(7 downto 0);
+			test: out STD_LOGIC_VECTOR (11 downto 0);
+			test2: out STD_LOGIC_VECTOR (7 downto 0)
         );
     END COMPONENT;
 	 
@@ -44,6 +46,8 @@ ARCHITECTURE behavior OF character_gen_test IS
    signal r : std_logic_vector(7 downto 0);
    signal g : std_logic_vector(7 downto 0);
    signal b : std_logic_vector(7 downto 0);
+   signal test : std_logic_vector(11 downto 0);
+   signal test2 : std_logic_vector(7 downto 0);
 
    -- Clock period definitions
    constant clk_period : time := 10 ns;
@@ -61,7 +65,9 @@ BEGIN
           write_en => write_en,
           r => r,
           g => g,
-          b => b
+          b => b,
+			 test => test,
+			 test2 => test2
         );
 
 
@@ -78,15 +84,23 @@ BEGIN
    -- Stimulus process
    stim_proc: process
    begin		
-      reset <= '0';
+      reset <= '1';
+		wait for clk_period;
+		reset <='0';
 		blank <= '0';
-		ascii_to_write <= "01000001";
-		write_en<= '0';
-      wait for 100 ns;	
-
-      wait for clk_period*10;
+		ascii_to_write <= "00000001";
+		write_en<= '0';	
+      wait for clk_period;
 		wait for clk_period/4;
-
+		ascii_to_write <= "00000001";
+		write_en<= '1';
+		wait for clk_period;
+		write_en<= '0';
+		wait for clk_period;
+		ascii_to_write <= "00000001";
+		write_en<= '1';
+		wait for clk_period;
+		write_en<= '0';
       for I in 0 to 480-1 loop
 			for J in 0 to 640-1 loop
 				row <= conv_std_logic_vector(I, 11);
