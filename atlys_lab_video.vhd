@@ -1,3 +1,5 @@
+
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
@@ -25,7 +27,9 @@ signal v_sync, h_sync: std_logic;
 signal pixel_clk, serialize_clk, serialize_clk_n: std_logic;
 signal v_completed, blank: std_logic;
 signal ball_x, ball_y, paddle_y: unsigned (10 downto 0);
-
+signal h_out, v_out, v_completed_out : std_logic;
+signal h_temp, v_temp, v_completed_temp: std_logic;
+signal blank_temp, blank_temp2, blank_temp3 : std_logic;
 component vga_sync
     port ( clk         : in  std_logic;
            reset       : in  std_logic;
@@ -53,7 +57,7 @@ begin
 	Inst_character_gen: entity work.character_gen 
 		PORT MAP(
 		clk => pixel_clk,
-		blank => blank,
+		blank => blank_temp2,
 		reset => reset,
 		row => std_logic_vector(row),
 		column => std_logic_vector(column),
@@ -95,7 +99,30 @@ begin
 				row=> row,
 				column=> column
 				);
-
+	--Pipeline the signals
+	
+	inst_blank: entity work.dff
+		port map(	 clk => pixel_clk,	 reset => reset,	 d => blank,	 q => blank_temp);
+	inst_blank2: entity work.dff
+		port map(	 clk => pixel_clk,	 reset => reset,	 d => blank_temp,	 q => blank_temp2);
+	inst_blank3: entity work.dff
+		port map(	 clk => pixel_clk,	 reset => reset,	 d => blank_temp2,	 q => blank_temp3);
+--	inst_h1: entity work.dff
+--		port map(	 clk => pixel_clk,	 reset => reset,	 d => h_out,	 q => h_temp);
+--	inst_h2: entity work.dff
+--		port map(	 clk => pixel_clk,	 reset => reset,	 d => h_temp,	 q => h_sync);
+--		
+--	inst_v1: entity work.dff
+--		port map(	 clk => pixel_clk,	 reset => reset,	 d => v_out,	 q => v_temp);
+--	inst_v2: entity work.dff
+--		port map(	 clk => pixel_clk,	 reset => reset,	 d => v_temp,	 q => v_sync);
+--		
+--	inst_v_completed_1: entity work.dff
+--		port map(	 clk => pixel_clk,	 reset => reset,	 d => v_completed_out,	 q => v_completed_temp);
+--	inst_v_completed_2: entity work.dff
+--		port map(	 clk => pixel_clk,	 reset => reset,	 d => v_completed_temp,	 q => v_completed);
+		
+		
     -- Clock divider - creates pixel clock from 100MHz clock
     inst_DCM_pixel: DCM
     generic map(

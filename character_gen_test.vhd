@@ -29,18 +29,7 @@ ARCHITECTURE behavior OF character_gen_test IS
         );
     END COMPONENT;
 	 
-	 component vga_sync
-    port ( clk         : in  std_logic;
-           reset       : in  std_logic;
-           h_sync      : out std_logic;
-           v_sync      : out std_logic;
-           v_completed : out std_logic;
-           blank       : out std_logic;
-           row         : out unsigned(10 downto 0);
-           column      : out unsigned(10 downto 0)
-     );
-	end component;
-    
+
 
    --Inputs
    signal clk : std_logic := '0';
@@ -55,7 +44,7 @@ ARCHITECTURE behavior OF character_gen_test IS
    signal r : std_logic_vector(7 downto 0);
    signal g : std_logic_vector(7 downto 0);
    signal b : std_logic_vector(7 downto 0);
-	signal h_sync, v_sync, v_completed : std_logic;
+
    -- Clock period definitions
    constant clk_period : time := 10 ns;
  
@@ -74,19 +63,7 @@ BEGIN
           g => g,
           b => b
         );
-		  
-	inst_vga_sync: vga_sync
-	 port map(
-				clk => clk,
-				reset => reset,
-				h_sync=>h_sync,
-				v_sync=>v_sync,
-				v_completed=>v_completed,
-				blank=>blank,
-				unsigned(row)=> row,
-				unsigned(column)=> column
-				);
-					  
+
 
    -- Clock process definitions
    clk_process :process
