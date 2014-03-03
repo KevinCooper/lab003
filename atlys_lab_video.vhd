@@ -12,8 +12,15 @@ entity atlys_lab_video is
              reset : in  std_logic;
 		    	 up: in std_logic;
 	    		 down: in std_logic;
-				 faster: in std_logic;
-				 random: in std_logic;
+				 enter: in std_logic;
+				 one: in std_logic;
+				 two: in std_logic;
+				 three: in std_logic;
+				 four: in std_logic;
+				 five: in std_logic;
+				 six: in std_logic;
+				 seven: in std_logic;
+				 eight: in std_logic;
              tmds  : out std_logic_vector(3 downto 0);
              tmdsb : out std_logic_vector(3 downto 0)
          );
@@ -30,6 +37,8 @@ signal ball_x, ball_y, paddle_y: unsigned (10 downto 0);
 signal h_out, v_out, v_completed_out : std_logic;
 signal h_temp, v_temp, v_completed_temp: std_logic;
 signal blank_temp, blank_temp2, blank_temp3 : std_logic;
+signal ascii_to_write: std_logic_vector(7 downto 0);
+signal write_en: std_logic;
 component vga_sync
     port ( clk         : in  std_logic;
            reset       : in  std_logic;
@@ -61,11 +70,19 @@ begin
 		reset => reset,
 		row => std_logic_vector(row),
 		column => std_logic_vector(column),
-		ascii_to_write => "01000001",
-		write_en => '0',
+		ascii_to_write => eight & seven & six & five & four & three & two & one,
+		write_en => write_en,
 		r => red,
 		g => green,
 		b => blue
+	);
+	
+	Inst_input_to_pulse: entity work.input_to_pulse
+		PORT MAP(
+		clk => pixel_clk,
+		reset => '0',
+		input =>enter,
+		pulse =>write_en
 	);
 
     -- Convert VGA signals to HDMI (actually, DVID ... but close enough)

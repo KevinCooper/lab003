@@ -25,6 +25,8 @@ signal row_out: std_logic_vector(3 downto 0);
 signal data_out: std_logic_vector(7 downto 0);
 signal f: unsigned(21 downto 0);
 signal mux_out: std_logic;
+signal internal_counter, temp: unsigned(11 downto 0);
+signal output, output2: std_logic_vector(7 downto 0);
 
 begin
 	 f<= unsigned( unsigned(column) + 80 * unsigned(row));
@@ -39,14 +41,24 @@ begin
     port map(   clk => clk, 	 reset => reset,	 d => row(3 downto 0),	 q => row_out);
 	 
 	 char_buffer: entity work.char_screen_buffer
-	 port map(	 clk => clk, we => write_en, address_a => "000000000000", address_b => std_logic_vector(f(11 downto 0)), data_in =>"01000001" );
+	 port map(	 clk => clk, we => write_en, address_a => std_logic_vector(internal_counter), address_b => std_logic_vector(f(11 downto 0)), data_in =>ascii_to_write, data_out_a =>  output, data_out_b => output2);
 	 
 	 font_rom: entity work.FONT_ROM
-    port map(   clk => clk, 	 addr => "1000001"&row_out,  data=> data_out);
-	 -- row_out & data_out_b, that when in the above addr
+    port map(   clk => clk, 	 addr => output2(6 downto 0)&row_out,  data=> data_out);
+	 
 	 mux: entity work.mux8to1
 	 port map(	 data =>data_out, sel=>col_out, q=> mux_out	);
 
+
+--Internal counter
+temp <= internal_counter +1;
+
+process(write_en) is
+begin
+	if(falling_edge(write_en)) then
+		internal_counter <= temp;
+	end if;
+end process;
 
 
 --Output stuff
