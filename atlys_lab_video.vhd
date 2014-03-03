@@ -10,17 +10,9 @@ entity atlys_lab_video is
     port ( 
              clk   : in  std_logic; -- 100 MHz
              reset : in  std_logic;
-		    	 up: in std_logic;
-	    		 down: in std_logic;
-				 enter: in std_logic;
-				 one: in std_logic;
-				 two: in std_logic;
-				 three: in std_logic;
-				 four: in std_logic;
-				 five: in std_logic;
-				 six: in std_logic;
-				 seven: in std_logic;
-				 eight: in std_logic;
+				 data: in STD_LOGIC;
+				 nes_clk: out STD_LOGIC;
+				 LATCH: out STD_LOGIC;
              tmds  : out std_logic_vector(3 downto 0);
              tmdsb : out std_logic_vector(3 downto 0)
          );
@@ -39,6 +31,8 @@ signal h_temp, v_temp, v_completed_temp, h_temp2, v_temp2 : std_logic;
 signal blank_temp, blank_temp2, blank_temp3 : std_logic;
 signal ascii_to_write: std_logic_vector(7 downto 0);
 signal write_en: std_logic;
+signal pos: std_logic_vector(11 downto 0);
+signal stuff, stuff2: std_logic;
 component vga_sync
     port ( clk         : in  std_logic;
            reset       : in  std_logic;
@@ -70,20 +64,29 @@ begin
 		reset => reset,
 		row => std_logic_vector(row),
 		column => std_logic_vector(column),
-		ascii_to_write => eight & seven & six & five & four & three & two & one,
+		ascii_to_write => ascii_to_write,
 		write_en => write_en,
 		r => red,
 		g => green,
-		b => blue
+		b => blue,
+		pos => pos
 	);
 	
-	Inst_input_to_pulse: entity work.input_to_pulse
-		PORT MAP(
+	
+	Inst_controller: entity work.controller
+	PORT MAP (
 		clk => pixel_clk,
-		reset => '0',
-		input =>enter,
-		pulse =>write_en
-	);
+		reset => reset,
+		ascii_to_write =>ascii_to_write,
+		write_en => write_en,
+		pos => pos,
+		data => data,
+		nes_clk => stuff,
+		latch => stuff2
+		);
+		
+nes_clk<=stuff;
+latch<= stuff2;
 
     -- Convert VGA signals to HDMI (actually, DVID ... but close enough)
     inst_dvid: entity work.dvid
