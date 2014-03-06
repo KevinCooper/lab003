@@ -27,11 +27,15 @@ The purpose of this lab was to use the VGA driver previously implemented in orde
 The most important part to the lab was the correct implementation of the character gen module show in the picture below.  The module needed to be created in the following steps.
 
  - Determine which row column we were in, f(row column) ex:
+
+
 ![Math](images/math.png)
 graphic 1
  - Pipeline the row and column signals
  - Determine address of font rom needed
  - Determine when the pixel should be displayed ex:
+
+
 ![Character Gen](images/character.png)
 graphic 2
 
@@ -42,7 +46,7 @@ graphic 3
 ## Implementation ##
 For the character generator module that needed to be implemented, there were two main sections.  A great amount of subcomponents were created in order to reduce the amount of code needed in the character generator module to increase readability.
 ### Top Shell Diagram ###
-![Block Diagram](images/BlockDiagram.png)
+![Block Diagram](images/diagram.png)
 graphic 4
 ### Character Generator Diagram ###
 ![Character Gen](images/character_gen.png)
