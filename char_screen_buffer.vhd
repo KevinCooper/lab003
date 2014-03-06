@@ -1,3 +1,7 @@
+--Author: Instructor Provided Code
+--Date: 3 March 2014
+--Purpose: This code provides a dual read/write implementation of RAM.
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;

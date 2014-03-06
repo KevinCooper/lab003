@@ -1,4 +1,5 @@
-
+--Author: Kevin Cooper
+--Purpose:  THe purpose of the top shell is to attach each of the sub components to create a device that is able to display ascii characters to the screen
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;

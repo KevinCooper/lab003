@@ -1,3 +1,6 @@
+--Author: Kevin Cooper
+--Date: 3 Mar 2014
+--Purpose: This module provides a 1 bit D-Flip-Flop
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;

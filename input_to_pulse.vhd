@@ -1,3 +1,6 @@
+--Author: Kevin Cooper
+--Date: 3 Mar 2014
+--Purpose: This module provides a pulse signal once every 400ms if the input is high in order to slow down user inputs
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -13,10 +16,10 @@ entity input_to_pulse is
 end input_to_pulse;
 
 architecture Behavioral of input_to_pulse is
-constant four_milli: integer := 400000; -- 2ms @ 20MHZ
+constant four_milli: integer := 4000000; -- 400ms @ 20MHZ
 type states is (idle, high);
 signal state_reg, state_next : states;
-signal counter, counter_next: unsigned(19 downto 0);
+signal counter, counter_next: unsigned(23 downto 0);
 
 begin
 
@@ -24,11 +27,11 @@ counter_next <= counter+1;
 process (clk, reset) is
 begin
 	if(reset='1') then
-		counter <= "00000000000000000000";
+		counter <= "000000000000000000000000";
 	elsif(rising_edge(clk)) then
 		counter <= counter;
 		if(counter = four_milli+1) then
-			counter <= "00000000000000000000";
+			counter <= "000000000000000000000000";
 		else
 			if(state_reg=high) then
 				counter <= counter_next;
@@ -54,11 +57,11 @@ begin
 		if(state_reg=idle and input='1') then
 			state_next<=high;
 		elsif(state_reg=high and counter=four_milli) then
-			if(input = '0') then
+--			if(input = '0') then
 				state_next<= idle;
-			else
-				state_next<= high;
-			end if;
+--			else
+--				state_next<= high;
+--			end if;
 		end if;
 	end if;
 

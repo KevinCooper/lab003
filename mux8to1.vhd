@@ -1,3 +1,7 @@
+--Author: Kevin Cooper
+--Date: 3 Mar 2014
+--Purpose: This module provides a 8 to 1 multiplexor
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;

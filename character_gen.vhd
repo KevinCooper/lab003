@@ -1,3 +1,6 @@
+--Author: Kevin Cooper
+--Date: 3 March 2014
+--Purpose:  This module determined the current working cell in the 30x80 screen.  It then detemrines which row of the current letter is being displayed, and outputs the correct pixel value for the column of that row.
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
